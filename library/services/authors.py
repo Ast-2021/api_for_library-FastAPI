@@ -24,19 +24,17 @@ def get_all_authors(db: Session):
 
 
 def get_author(id: int, db: Session):
-    try:
-        author = db.query(Authors).filter(Authors.id==id).first()
-        return author
-    
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Author not found")
+    author = db.query(Authors).filter(Authors.id==id).first()
+    if not author:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Author not found")
+    return author
 
 
 def update(id: int, data: authors.AuthorUpdate, db: Session):
     try:
         author = db.query(Authors).filter(Authors.id==id).first()
         if not author:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                                 detail="Author not found")
         author.name = data.name
         author.last_name = data.last_name
@@ -55,14 +53,11 @@ def remove(id: int, db: Session):
     try:
         author = db.query(Authors).filter(Authors.id==id).first()
         if not author:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail="Author not found")
         else:
             db.delete(author)
             db.commit()
-            raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,
-                                 detail="Successful removal")
-        
     except Exception:
         db.rollback()
         HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

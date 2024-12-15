@@ -10,7 +10,7 @@ from ..dto import books as BookDTO
 router = APIRouter()
 
 
-@router.post('/', tags=['books'], response_model=BookDTO.BookCreate)
+@router.post('/', tags=['books'], response_model=BookDTO.Book)
 async def create(data: BookDTO.BookCreate, db: Session=Depends(get_db)):
     book = BookService.create_book(data, db)
     return book

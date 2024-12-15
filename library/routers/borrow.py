@@ -10,7 +10,7 @@ from ..dto import borrow as BorrowDTO
 router = APIRouter()
 
 
-@router.post('/', tags=['borrow'], response_model=BorrowDTO.BorrowCreate)
+@router.post('/', tags=['borrow'], response_model=BorrowDTO.Borrow)
 async def create(data: BorrowDTO.BorrowCreate, db: Session=Depends(get_db)):
     borrow = BorrowService.create_borrow(data, db)
     return borrow

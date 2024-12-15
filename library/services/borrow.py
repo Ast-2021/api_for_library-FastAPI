@@ -9,10 +9,10 @@ def create_borrow(data: borrow.BorrowCreate, db: Session):
         borrow = Borrow(book_id=data.book_id, reader_name=data.reader_name)
         book = db.query(Books).filter(Books.id==borrow.book_id).first()
         if book is None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail={'message': 'book in borrow not found'})
         elif book.available_quantity <= 0:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                                 detail={'message': 'not available'})
         else:
             book.available_quantity -= 1
@@ -22,7 +22,7 @@ def create_borrow(data: borrow.BorrowCreate, db: Session):
             return borrow
     except Exception:
         db.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
 
@@ -31,7 +31,8 @@ def get_all_borrow(db: Session):
     if borrow:
         return borrow
     else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=status.HTTP_200_OK, 
+                            detail={'message': 'No borrow'})
 
 
 def get_borrow(id: int, db: Session):
@@ -39,7 +40,7 @@ def get_borrow(id: int, db: Session):
     if borrow:
         return borrow
     else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail={'message': 'borrow not found'})
 
 
@@ -51,7 +52,7 @@ def update(id: int, data: borrow.BorrowUpdate, db: Session):
 
         book = db.query(Books).filter(Books.id==borrow.book_id).first()
         if not book:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail={'message': 'book in borrow not found'})
         
         book.available_quantity += 1
@@ -61,20 +62,18 @@ def update(id: int, data: borrow.BorrowUpdate, db: Session):
 
     except Exception:
         db.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail={'message': 'Borrow data could not be updated'})
-
 
 
 def remove(id: int, db: Session):
     borrow = db.query(Borrow).filter(Borrow.id==id).first()
     if not borrow:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail={'message': 'borrow not found'})
     try:
         db.delete(borrow)
         db.commit()
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
 
     except Exception :
         db.rollback()

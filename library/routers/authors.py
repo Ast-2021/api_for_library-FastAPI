@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from fastapi import Response
 from sqlalchemy.orm import Session
 from typing import List
 from ..database import get_db
@@ -10,7 +11,7 @@ from ..dto import authors as AuthorDTO
 router = APIRouter()
 
 
-@router.post('/', tags=['authors'], response_model=AuthorDTO.AuthorCreate)
+@router.post('/', tags=['authors'], response_model=AuthorDTO.Author)
 async def create(data: AuthorDTO.AuthorCreate, db: Session=Depends(get_db)):
     author = AuthorService.create_author(data, db)
     return author
