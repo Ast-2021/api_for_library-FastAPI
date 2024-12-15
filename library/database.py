@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql://library_user:library_user@localhost/api_for_library_db"
+SQLALCHEMY_DATABASE_URL = "postgresql://library_user:library_user@db:5432/api_for_library_db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 

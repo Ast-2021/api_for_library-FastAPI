@@ -57,6 +57,7 @@ def update(id: int, data: borrow.BorrowUpdate, db: Session):
         
         book.available_quantity += 1
         db.commit()
+        db.delete(borrow)
         db.refresh(borrow)
         return borrow
 

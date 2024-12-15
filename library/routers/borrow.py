@@ -30,11 +30,6 @@ async def get(id: int, db: Session=Depends(get_db)):
 
 @router.patch('/{id}', tags=['borrow'], response_model=BorrowDTO.BorrowUpdate)
 async def update(id: int, data: BorrowDTO.BorrowUpdate, db: Session=Depends(get_db)):
-    borrow = BorrowService.update(id, data, db)
-    return borrow
-
-
-@router.delete('/{id}', tags=['borrow'], status_code=status.HTTP_204_NO_CONTENT)
-async def delete(id: int, db: Session=Depends(get_db)):
-    borrow =  BorrowService.remove(id, db)
-    return borrow
+    BorrowService.update(id, data, db)
+    BorrowService.remove(id, db)
+    return {"message": "Borrow updated and deleted"}

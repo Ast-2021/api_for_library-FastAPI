@@ -1,0 +1,15 @@
+services:
+  db_test:
+    image: postgres
+    volumes:
+      - ./data/db_test:/var/lib/postgresql/data
+      - ./init_test.sql:/docker-entrypoint-initdb.d/init_test.sql
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5

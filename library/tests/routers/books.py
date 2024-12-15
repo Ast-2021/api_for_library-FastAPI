@@ -12,7 +12,7 @@ from library.models import Books, Authors
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql://test_user:test_user@localhost/test_db"
+SQLALCHEMY_DATABASE_URL = "postgresql://test_user:test_user@db_test:5432/test_db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
